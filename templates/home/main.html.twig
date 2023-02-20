@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include '_flashes.html.twig' %}
+    <h1 class="container p-5 my-5 border bg-light text-dark text-center">Welcome to SymfonyGramm</h1>
+    <div class="d-grid gap-3">
+    <a class="btn btn-outline-primary" href="{{ path('auth.signup') }}">Sign Up</a><br>
+    <a class="btn btn-outline-primary" href="{{ path('app_login') }}">Login</a>
+    </div>
+{% endblock %}

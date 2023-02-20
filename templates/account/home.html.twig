@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{# @var dto \AccountHome #}
+
+{% block title %}Home{% endblock %}
+
+{% block navi %}
+    <nav class="navbar navbar-expand-sm bg-light justify-content-center">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="{{ path('account_home') }}">My account</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ path('list_users') }}" >Users</a></li>
+            <li class="nav-item"><a class="nav-link text-danger" href="{{ path('app_logout') }}">Logout</a><br></li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block body %}
+    {% include '_flashes.html.twig' %}
+    <div class="d-inline-flex">
+        <div class="container">
+            <nav class="navbar sm bg-light">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('list_news') }}">All news</a></li>
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('create_news') }}">Add news</a></li>
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('auth.reset') }}">Reset password</a></li>
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('account_edit_info') }}">Edit personal data</a></li>
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('account_edit_avatar') }}">Edit avatar</a></li>
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('my_subscriptions') }}">My subscriptions</a></li>
+                    <li class="nav-item"><a class="nav-link text-primary h5" href="{{ path('my_followers') }}">My followers</a></li>
+                </ul>
+            </nav>
+        </div>
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="p-5"><h2>{{ dto.name }}</h2>
+            {{ dto.biography }}
+            </div>
+        <div class="pt-5"><img class="img-thumbnail float-end" src="{{ dto.avatar }}" width="600" height="auto" />
+            <div class="d-flex p-3 justify-content-between">
+                <div>Likes {{ dto.likes }}</div>
+                <div><a class="nav-link text-primary h5" href="{{ path('appraised') }}">Appraised</a></div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    <div>
+        {% if dto.news|length > 0 %}
+            <h2>My news</h2><br>
+            {% for key, value in dto.news %}
+                <div class="card" style="width:400px">
+                    <img class="card-img-top" src="{{ value.image }}" alt="Card image">
+                    <div class="card-body">
+                        <p class="card-text">{{ key }}</p>
+                        {{ value.date }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

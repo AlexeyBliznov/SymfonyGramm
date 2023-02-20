@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hi{% endblock %}
+{% block navi %}
+    <nav class="navbar navbar-expand-sm bg-light justify-content-center">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="{{ path('account_home') }}">My account</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ path('list_users') }}" >Users</a></li>
+            <li class="nav-item"><a class="nav-link text-danger" href="{{ path('app_logout') }}">Logout</a><br></li>
+        </ul>
+    </nav>
+{% endblock %}
+{% block body %}
+    {% include '_flashes.html.twig' %}
+    <h2>{{ header }}</h2>
+    {% for key, value in result %}
+        <ul>
+            <li><div class="card" style="width:400px">
+                    <img class="card-img-top" src="{{ value.avatar }}" alt="Card image">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ value.name }}</h4>
+                        <a href="/account/user/{{ key }}" class="btn btn-primary">Show</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    {% endfor %}
+{% endblock %}
