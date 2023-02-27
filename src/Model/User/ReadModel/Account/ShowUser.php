@@ -11,7 +11,7 @@ class ShowUser
     private string $avatar;
     private int $id;
     private int $likes;
-    private array $news;
+    private ?array $news;
     private string $likeName;
     private string $likeUrl;
     private string $subName;
@@ -27,7 +27,7 @@ class ShowUser
         string $likeUrl,
         string $subName,
         string $subUrl,
-        array $news = null
+        ?array $news = null
     )
     {
         $this->name = $name;
@@ -62,7 +62,7 @@ class ShowUser
         return $this->id;
     }
 
-    public function getNews(): array
+    public function getNews(): ?array
     {
         return $this->news;
     }

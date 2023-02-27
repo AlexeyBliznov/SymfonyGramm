@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\SignUp\Confirm;
 
-use App\Model\User\Entity\User\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
+    private ObjectManager $entityManager;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->entityManager = $managerRegistry->getManager();
+        $this->repository = $this->entityManager->getRepository(\App\Model\User\Entity\User\User::class);
     }
 
     public function handle(Command $command): void
     {
-        $entityManager = $this->managerRegistry->getManager();
-        $repository = $entityManager->getRepository(User::class);
-
-        if(!$user = $repository->findByConfirmToken($command->token)) {
+        if(!$user = $this->repository->findByConfirmToken($command->token)) {
             throw new \DomainException('Incorrect token');
         }
 
         $user->confirmSignUp();
 
-        $entityManager->flush();
+        $this->entityManager->flush();
     }
 }

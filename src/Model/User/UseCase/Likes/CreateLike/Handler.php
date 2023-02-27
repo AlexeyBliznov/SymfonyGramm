@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\Likes\CreateLike;
 
+use App\Model\User\Entity\User\Account;
 use App\Model\User\Entity\User\Like;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
+    private ObjectManager $entityManager;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->entityManager = $managerRegistry->getManager();
+        $this->repository = $this->entityManager->getRepository(\App\Model\User\Entity\User\User::class);
     }
 
-    public function handle(int $id): void
+    public function handle(int $id, Account $actualAccount): void
     {
-        $entityManager = $this->managerRegistry->getManager();
-
-        $repository = $entityManager->getRepository(\App\Model\User\Entity\User\User::class);
-        $user = $repository->getById($id);
+        $user = $this->repository->getById($id);
 
         $account = $user->getAccount();
 
-        $like = new Like($account, $account->getAvatarKey());
+        $like = new Like($actualAccount, $account->getAvatarKey());
 
-        $entityManager->persist($like);
-        $entityManager->flush();
+        $this->entityManager->persist($like);
+        $this->entityManager->flush();
     }
 }

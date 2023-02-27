@@ -9,18 +9,14 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class NewsRepository extends ServiceEntityRepository
 {
-    private \Doctrine\ORM\EntityManagerInterface $entityManager;
-
-    public function __construct(ManagerRegistry $registry, \Doctrine\ORM\EntityManagerInterface $entityManager)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, News::class);
-        $this->entityManager = $entityManager;
     }
 
     public function getByAccount(Account $account): array
     {
-        $repository = $this->entityManager->getRepository(News::class);
-        return $repository->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
                 ->select('t')
                 ->where('t.account_id = :account')
                 ->setParameter(':account', $account)

@@ -7,20 +7,20 @@ namespace App\Model\User\UseCase\View\AccountHome;
 use App\Model\User\Entity\User\Account;
 use App\Model\User\ReadModel\Account\AccountHome;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $entityManager = $managerRegistry->getManager();
+        $this->repository = $entityManager->getRepository(\App\Model\User\Entity\User\Like::class);
     }
 
     public function handle(Account $account): AccountHome
     {
-        $entityManager = $this->managerRegistry->getManager();
-
         $name = $account->getFirstName() . ' ' . $account->getLastName();
         $biography = $account->getBiography();
         $avatar = $account->getAvatar();
@@ -34,8 +34,7 @@ class Handler
             ];
         }
 
-        $likeRepository = $entityManager->getRepository(\App\Model\User\Entity\User\Like::class);
-        $likes = $likeRepository->getByImageKey($account->getAvatarKey());
+        $likes = $this->repository->getByImageKey($account->getAvatarKey());
 
 
         return new AccountHome($name, $biography, $avatar, count($likes), $newsResult);

@@ -6,21 +6,21 @@ namespace App\Model\User\UseCase\View\ListOfNews;
 
 use App\Model\User\Entity\User\Account;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $entityManager = $managerRegistry->getManager();
+        $this->repository = $entityManager->getRepository(\App\Model\User\Entity\User\Follower::class);
     }
 
     public function handle(Account $account): array
     {
-        $entityManager = $this->managerRegistry->getManager();
-        $repository = $entityManager->getRepository(\App\Model\User\Entity\User\Follower::class);
-        $followers = $repository->getByFollowerId($account);
+        $followers = $this->repository->getByFollowerId($account);
         $result = [];
 
         foreach ($followers as $follower) {

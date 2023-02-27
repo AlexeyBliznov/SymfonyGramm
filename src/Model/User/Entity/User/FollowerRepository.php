@@ -9,18 +9,14 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class FollowerRepository extends ServiceEntityRepository
 {
-    private \Doctrine\ORM\EntityManagerInterface $entityManager;
-
-    public function __construct(ManagerRegistry $registry, \Doctrine\ORM\EntityManagerInterface $entityManager)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Follower::class);
-        $this->entityManager = $entityManager;
     }
 
     public function getByFollowerId(Account $followerId): array
     {
-        $repository = $this->entityManager->getRepository(Follower::class);
-        return $repository->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->select('t')
             ->where('t.followerId = :followerId')
             ->setParameter(':followerId', $followerId)
@@ -29,8 +25,7 @@ class FollowerRepository extends ServiceEntityRepository
 
     public function getByFollowedUserId(Account $followedUserId): array
     {
-        $repository = $this->entityManager->getRepository(Follower::class);
-        return $repository->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->select('t')
             ->where('t.followedUserId = :followedUserId')
             ->setParameter(':followedUserId', $followedUserId)
@@ -39,8 +34,7 @@ class FollowerRepository extends ServiceEntityRepository
 
     public function deleteSubscription(Account $followerId, Account $followedUserId): void
     {
-        $repository = $this->entityManager->getRepository(Follower::class);
-        $repository->createQueryBuilder('t')
+        $this->createQueryBuilder('t')
             ->delete(Follower::class, 't')
             ->where('t.followerId = :followerId')
             ->andWhere('t.followedUserId = :followedUserId')

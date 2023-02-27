@@ -19,12 +19,12 @@ class Subscription
             $accounts[] = $follower->getFollowerId();
         }
 
-        if (!in_array($account, $accounts)) {
-            $this->url = 'subscribe';
-            $this->name = 'Subscribe';
-        } else {
+        if (in_array($account, $accounts)) {
             $this->url = 'unsubscribe';
             $this->name = 'Unsubscribe';
+        } else {
+            $this->url = 'subscribe';
+            $this->name = 'Subscribe';
         }
     }
 

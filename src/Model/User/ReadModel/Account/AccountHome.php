@@ -10,9 +10,9 @@ class AccountHome
     private string $biography;
     private string $avatar;
     private int $likes;
-    private array $news;
+    private ?array $news;
 
-    public function __construct(string $name, string $biography, string $avatar, int $likes, array $news = null)
+    public function __construct(string $name, string $biography, string $avatar, int $likes, ?array $news = null)
     {
         $this->name = $name;
         $this->biography = $biography;
@@ -36,7 +36,7 @@ class AccountHome
         return $this->avatar;
     }
 
-    public function getNews(): array
+    public function getNews(): ?array
     {
         return $this->news;
     }

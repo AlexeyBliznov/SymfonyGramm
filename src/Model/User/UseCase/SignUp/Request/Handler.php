@@ -10,13 +10,16 @@ use App\Model\User\Service\MailSender;
 use App\Model\User\Service\PasswordHasher;
 use App\Model\User\Service\TokenGenerator;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
     private PasswordHasher $hasher;
     private TokenGenerator $generator;
     private MailSender $mailer;
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
+    private ObjectManager $entityManager;
 
     public function __construct(
         PasswordHasher $hasher,
@@ -27,17 +30,16 @@ class Handler
     {
         $this->hasher = $hasher;
         $this->generator = $generator;
-        $this->managerRegistry = $managerRegistry;
         $this->mailer = $mailer;
+        $this->entityManager = $managerRegistry->getManager();
+        $this->repository = $this->entityManager->getRepository(\App\Model\User\Entity\User\User::class);
     }
 
     public function handle(Command $command): void
     {
-        $entityManager = $this->managerRegistry->getManager();
-        $repository = $entityManager->getRepository(User::class);
         $email = new Email($command->email);
 
-        if($repository->hasByEmail($email->getValue())) {
+        if($this->repository->hasByEmail($email->getValue())) {
             throw new \DomainException('User already exists');
         }
 
@@ -48,8 +50,8 @@ class Handler
             $token = $this->generator->generate()
         );
 
-        $entityManager->persist($user);
+        $this->entityManager->persist($user);
         $this->mailer->send($email, $token);
-        $entityManager->flush();
+        $this->entityManager->flush();
     }
 }

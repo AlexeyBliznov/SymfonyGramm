@@ -6,23 +6,22 @@ namespace App\Model\User\UseCase\News\AddNews;
 
 use App\Model\User\Entity\User\News;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectManager $entityManager;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->entityManager = $managerRegistry->getManager();
     }
 
     public function handle(Command $command, $image): void
     {
-        $entityManager = $this->managerRegistry->getManager();
-
         $news = new News($command->account, new \DateTimeImmutable(), $command->message, $image, $command->imageKey);
 
-        $entityManager->persist($news);
-        $entityManager->flush();
+        $this->entityManager->persist($news);
+        $this->entityManager->flush();
     }
 }

@@ -9,30 +9,24 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class UserRepository extends ServiceEntityRepository
 {
-    private \Doctrine\ORM\EntityManagerInterface $entityManager;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
-        $this->entityManager = $this->getEntityManager();
     }
 
     public function findByConfirmToken(string $token): ?User
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        return $repository->findOneBy(['confirmToken' =>$token]);
+        return $this->findOneBy(['confirmToken' =>$token]);
     }
 
     public function findByResetToken(string $resetToken): ?User
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        return $repository->findOneBy(['resetToken.token' =>$resetToken]);
+        return $this->findOneBy(['resetToken.token' =>$resetToken]);
     }
 
     public function getById(int $id): User
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        if (!$user = $repository->find($id)) {
+        if (!$user = $this->find($id)) {
             throw new \DomainException('User is not found.');
         }
         return $user;
@@ -40,8 +34,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function getByEmail(string $email): User
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        if (!$user = $repository->findOneBy(['email' => $email])) {
+        if (!$user = $this->findOneBy(['email' => $email])) {
             throw new \DomainException('User is not found');
         }
         return $user;
@@ -49,8 +42,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function hasByEmail(string $email): bool
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        return $repository->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
                 ->select('COUNT(t.id)')
                 ->andWhere('t.email = :email')
                 ->setParameter(':email', $email)
@@ -59,6 +51,6 @@ class UserRepository extends ServiceEntityRepository
 
     public function flush(): void
     {
-        $this->entityManager->flush();
+        $this->flush();
     }
 }

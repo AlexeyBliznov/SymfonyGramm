@@ -19,12 +19,12 @@ class Likes
             $accounts[] = $value->getAccount();
         }
 
-        if (!in_array($account, $accounts)) {
-            $this->url = 'like';
-            $this->name = 'Like';
-        } else {
+        if (in_array($account, $accounts)) {
             $this->url = 'dislike';
             $this->name = 'Dislike';
+        } else {
+            $this->url = 'like';
+            $this->name = 'Like';
         }
     }
 

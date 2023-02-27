@@ -6,19 +6,21 @@ namespace App\Model\User\UseCase\View\Subscription;
 
 use App\Model\User\Entity\User\Account;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $entityManager = $managerRegistry->getManager();
+        $this->repository = $entityManager->getRepository(\App\Model\User\Entity\User\Follower::class);
     }
 
     public function handle(Account $account, string $url = 'followers'): array
     {
-        if ($url = 'subs') {
+        if ($url === 'subs') {
             return $this->getSubscription($account);
         } else {
             return $this->getFollowers($account);
@@ -27,9 +29,7 @@ class Handler
 
     private function getSubscription(Account $account): array
     {
-        $entityManager = $this->managerRegistry->getManager();
-        $repository = $entityManager->getRepository(\App\Model\User\Entity\User\Follower::class);
-        $followers = $repository->getByFollowerId($account);
+        $followers = $this->repository->getByFollowerId($account);
         $result = [];
 
         foreach ($followers as $follower) {
@@ -44,9 +44,7 @@ class Handler
 
     private function getFollowers(Account $account): array
     {
-        $entityManager = $this->managerRegistry->getManager();
-        $repository = $entityManager->getRepository(\App\Model\User\Entity\User\Follower::class);
-        $followers = $repository->getByFollowedUserId($account);
+        $followers = $this->repository->getByFollowedUserId($account);
         $result = [];
 
         foreach ($followers as $follower) {

@@ -7,6 +7,7 @@ namespace App\Model\User\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
 #[ORM\Table(name: 'accounts')]
@@ -17,7 +18,7 @@ class Account
     private int $id;
     #[ORM\OneToOne(inversedBy: 'account', targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private User $user;
+    private UserInterface $user;
     #[ORM\Column(name: 'first_name', type: 'string')]
     private string $firstName;
     #[ORM\Column(name: 'last_name', type: 'string')]
@@ -37,7 +38,7 @@ class Account
     #[ORM\OneToMany(mappedBy: 'account', targetEntity: Like::class)]
     private Collection $like;
 
-    public function __construct(User $user, string $firstName, string $lastName, string $biography, string $avatar, string $avatarKey)
+    public function __construct(UserInterface $user, string $firstName, string $lastName, string $biography, string $avatar, string $avatarKey)
     {
         $this->user = $user;
         $this->firstName = $firstName;

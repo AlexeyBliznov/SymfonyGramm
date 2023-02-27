@@ -59,13 +59,13 @@ class AccountController extends AbstractController
         $user = $this->getUser();
         $accounts = $handler->handle($user->getAccount());
 
-        if (!count($accounts) < 1) {
+        if (count($accounts) < 1) {
+            $this->addFlash('error', 'No users');
+            return $this->redirectToRoute('account_home');
+        } else {
             return $this->render('account/show_all.html.twig', [
                 'result' => $accounts
             ]);
-        } else {
-            $this->addFlash('error', 'No users');
-            return $this->redirectToRoute('account_home');
         }
     }
 
@@ -78,7 +78,7 @@ class AccountController extends AbstractController
     #[Route('/account/user/{id}/like', name: 'like_image', methods: ['GET'])]
     public function like(int $id, Request $request, Likes\CreateLike\Handler $handler): Response
     {
-        $handler->handle($id);
+        $handler->handle($id, $this->getUser()->getAccount());
 
         return $this->redirectToRoute('show_user', [
             'id' => $id

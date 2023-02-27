@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\Account\EditAvatar;
 
-use App\Model\User\Entity\User\Account;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private ManagerRegistry $managerRegistry;
+    private ObjectRepository $repository;
+    private ObjectManager $entityManager;
 
     public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
+        $this->entityManager = $managerRegistry->getManager();
+        $this->repository = $this->entityManager->getRepository(\App\Model\User\Entity\User\Account::class);
     }
 
     public function handle(Command $command, string $avatar): void
     {
-        $entityManager = $this->managerRegistry->getManager();
-        $repository = $entityManager->getRepository(Account::class);
-
-        $account = $repository->findByUser($command->user);
+        $account = $this->repository->findByUser($command->user);
 
         $account->setAvatar($avatar);
         $account->setAvatarKey($command->avatarKey);
 
-        $entityManager->persist($account);
-        $entityManager->flush();
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
     }
 }

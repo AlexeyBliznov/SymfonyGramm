@@ -14,9 +14,7 @@ class AccountTest extends TestCase
     {
         $builder = new UserBuilder();
         $user = $builder->buildSignedUpUser();
-        $account = new Account($user);
-
-        $account->create('First', 'Last', 'Bio', 'img', '123');
+        $account = new Account($user, 'First', 'Last', 'Bio', 'img', '123');
 
         $this->assertEquals('First Last', $account->getFirstName() . ' ' . $account->getLastName());
         $this->assertEquals('Bio', $account->getBiography());
@@ -28,9 +26,7 @@ class AccountTest extends TestCase
     {
         $builder = new UserBuilder();
         $user = $builder->buildSignedUpUser();
-        $account = new Account($user);
-
-        $account->create('First', 'Last', 'Bio', 'img', '123');
+        $account = new Account($user, 'First', 'Last', 'Bio', 'img', '123');
 
         $account->setFirstName('First1');
         $account->setAvatar('JPEG');
